@@ -1,17 +1,16 @@
-package com.itis.newsviewer.ui
+package com.itis.newsviewer.ui.screen.list
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
@@ -19,44 +18,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
+import androidx.paging.compose.itemKey
+import coil.compose.AsyncImage
 import com.itis.newsviewer.domain.news.model.NewsInfo
 import com.itis.newsviewer.ui.theme.NewsViewerTheme
-import dagger.hilt.android.AndroidEntryPoint
-
-@AndroidEntryPoint
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-
-            // A surface container using the 'background' color from the theme
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    Greeting("Android")
-//                }
-            MainScreen()
-        }
-    }
-}
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
+fun ListScreen(
+    navController: NavController,
+    viewModel: MainViewModel = koinViewModel(),
+) {
     val state = viewModel.state.collectAsStateWithLifecycle()
 
     MainContent(
         viewState = state.value,
         eventHandler = viewModel::event,
-        viewModel
     )
 }
 
@@ -64,44 +50,29 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
 fun MainContent(
     viewState: MainViewState,
     eventHandler: (MainEvent) -> Unit,
-    viewModel: MainViewModel,
 ) {
-    NewsViewerTheme {
-        LazyColumnSample(viewState, eventHandler, viewModel)
-    }
+    LazyColumnSample(viewState, eventHandler)
 }
-
-//@Composable
-//fun Greeting(name: String, modifier: Modifier = Modifier) {
-//    Text(
-//        text = "Hello $name!",
-//        modifier = modifier
-//    )
-//}
-
-//@Composable
-//fun ListLayout() {
-//    Column {
-//        LazyColumnSample()
-//    }
-//}
 
 @Composable
 fun LazyColumnSample(
     viewState: MainViewState,
     eventHandler: (MainEvent) -> Unit,
-    viewModel: MainViewModel
 ) {
-    val news = viewModel.getNews().collectAsLazyPagingItems()
+    val news = viewState.news.collectAsLazyPagingItems()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
     ) {
-        items(news, key = { it.uuid }) {
-            it?.let{
-                MyListItem(newsInfo = it) {
-
+        items(
+            count = news.itemCount,
+            key = news.itemKey(key = { it.uuid }),
+        ) { index ->
+            val item = news[index]
+            item?.let {
+                MyListItem(newsInfo = it) { item ->
+                    eventHandler.invoke(MainEvent.onNewsItemClick(item))
                 }
             }
             Divider()
@@ -110,6 +81,7 @@ fun LazyColumnSample(
             is LoadState.Error -> {
 
             }
+
             is LoadState.Loading -> {
                 item {
                     Column(
@@ -128,12 +100,14 @@ fun LazyColumnSample(
                     }
                 }
             }
+
             else -> {}
         }
         when (val state = news.loadState.append) { // Pagination
             is LoadState.Error -> {
 
             }
+
             is LoadState.Loading -> {
                 item {
                     Column(
@@ -147,6 +121,7 @@ fun LazyColumnSample(
                     }
                 }
             }
+
             else -> {}
         }
     }
@@ -155,38 +130,69 @@ fun LazyColumnSample(
 @Composable
 fun MyListItem(
     newsInfo: NewsInfo,
-    onClick: (NewsInfo) -> Unit
+    onClick: (NewsInfo) -> Unit,
 ) {
     Column(
         modifier = Modifier
-            .height(40.dp)
             .fillMaxWidth()
+            .height(400.dp)
+            .clickable {
+                onClick.invoke(newsInfo)
+            }
+            .padding(16.dp)
     ) {
-        Text(text = newsInfo.title)
-        Text(text = newsInfo.url)
+        Text(
+            text = newsInfo.title,
+            fontFamily = FontFamily.Serif,
+            fontSize = 24.sp
+        )
+        Text(
+            text = newsInfo.description,
+            fontFamily = FontFamily.Cursive
+        )
+        Spacer(
+            modifier = Modifier.height(8.dp)
+        )
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+//            Image(
+//                painterResource(R.drawable.image),
+//                contentDescription = "",
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .background(Color.Blue)
+//            )
+
+            AsyncImage(
+                model = newsInfo.imageUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+        }
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//private fun GreetingPreview() {
-//    NewsViewerTheme {
-//        MainContent(viewState = MainViewState(
-//            listOf(
-//                NewsInfo(
-//                    uuid = "1",
-//                    categories = listOf("vehicle"),
-//                    description = "news",
-//                    imageUrl = "",
-//                    keywords = "",
-//                    language = "",
-//                    publishedAt = "",
-//                    snippet = "",
-//                    source = "",
-//                    title = "News",
-//                    url = "https",
-//                )
-//            )
-//        ), eventHandler = {})
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+private fun GreetingPreview() {
+    NewsViewerTheme {
+        MyListItem(
+            NewsInfo(
+                uuid = "1",
+                categories = listOf("vehicle"),
+                description = "В Казани спасили кота Васю,который застрял на дереве...",
+                imageUrl = "https://static.1tv.ru/uploads/video/material/splash/2022/08/16/739756/big/739756_big_41eceeb1b1.jpg",
+                keywords = "",
+                language = "",
+                publishedAt = "",
+                snippet = "",
+                source = "",
+                title = "Выпуск новостей в 15:00",
+                url = "https",
+            ), {})
+    }
+}
