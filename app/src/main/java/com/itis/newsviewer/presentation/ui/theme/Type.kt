@@ -1,4 +1,4 @@
-package com.itis.newsviewer.ui.theme
+package com.itis.newsviewer.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

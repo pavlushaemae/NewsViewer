@@ -7,15 +7,15 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface NewsApi {
-    @GET("uuid")
+    @GET("uuid/{uuid}")
     suspend fun getNewsById(
-        @Path("uuid") newsId: String,
+        @Path("uuid") uuid: String,
     ): NewsResponse
 
     @GET("all")
     suspend fun getNewsPage(
         @Query("page") page: Int,
-        @Query(value = "limit") limit: Int = 3 // limit by api
+        @Query(value = "limit") limit: Int = 3,
     ): NewsListResponse
 
 }

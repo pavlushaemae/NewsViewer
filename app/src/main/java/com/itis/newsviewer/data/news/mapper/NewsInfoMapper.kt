@@ -8,12 +8,8 @@ import com.itis.newsviewer.domain.news.model.NewsInfo
 fun NewsResponse.toNewsInfo(): NewsInfo {
     return NewsInfo(
         uuid = uuid,
-        categories = categories,
         description = description,
         imageUrl = imageUrl,
-        keywords = keywords,
-        language = language,
-        publishedAt = publishedAt,
         snippet = snippet,
         source = source,
         title = title,
@@ -24,12 +20,8 @@ fun NewsResponse.toNewsInfo(): NewsInfo {
 fun Data.toNewsInfo(): NewsInfo {
     return NewsInfo(
         uuid = uuid,
-        categories = categories,
         description = description,
         imageUrl = imageUrl,
-        keywords = keywords,
-        language = language,
-        publishedAt = publishedAt,
         snippet = snippet,
         source = source,
         title = title,

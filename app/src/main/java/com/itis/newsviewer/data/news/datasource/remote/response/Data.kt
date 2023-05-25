@@ -1,6 +1,5 @@
 package com.itis.newsviewer.data.news.datasource.remote.response
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Data(
@@ -27,5 +26,5 @@ data class Data(
     @SerializedName("url")
     val url: String,
     @SerializedName("uuid")
-    val uuid: String
+    val uuid: String,
 )

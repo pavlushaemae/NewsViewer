@@ -1,14 +1,13 @@
 package com.itis.newsviewer.domain.news
 
 import com.itis.newsviewer.domain.news.model.NewsInfo
-import javax.inject.Inject
 
-class GetNewsByIdUseCase @Inject constructor(
+class GetNewsByIdUseCase(
     private val repository: NewsRepository,
 ) {
     suspend operator fun invoke(
         id: String,
     ): NewsInfo {
-        return repository.getNewsByUuid(id)
+        return repository.getNewsById(id)
     }
 }

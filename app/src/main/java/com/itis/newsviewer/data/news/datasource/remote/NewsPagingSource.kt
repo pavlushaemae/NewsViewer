@@ -4,7 +4,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.itis.newsviewer.data.news.mapper.toNewsInfoList
 import com.itis.newsviewer.domain.news.model.NewsInfo
-import javax.inject.Inject
 
 class NewsPagingSource(
     private val newsApi: NewsApi,

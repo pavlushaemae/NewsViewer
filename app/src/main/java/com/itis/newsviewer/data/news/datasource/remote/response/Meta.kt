@@ -1,6 +1,5 @@
 package com.itis.newsviewer.data.news.datasource.remote.response
 
-
 import com.google.gson.annotations.SerializedName
 
 data class Meta(
@@ -11,5 +10,5 @@ data class Meta(
     @SerializedName("page")
     val page: Int,
     @SerializedName("returned")
-    val returned: Int
+    val returned: Int,
 )
