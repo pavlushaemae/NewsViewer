@@ -1,4 +1,4 @@
-package com.itis.newsviewer.ui.theme
+package com.itis.newsviewer.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -38,11 +38,11 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun NewsViewerTheme(
+fun MainTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {

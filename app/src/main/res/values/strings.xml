@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">NewsViewer</string>
+    <string name="screen_list">List</string>
+    <string name="screen_settings">Settings</string>
+    <string name="screen_detail">Detail</string>
+    <string name="screen_stub">Stub</string>
+    <string name="error">Error</string>
 </resources>
