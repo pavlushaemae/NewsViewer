@@ -34,12 +34,6 @@ android {
             )
         }
     }
-    val keystoreProperties = Properties()
-    keystoreProperties.load(FileInputStream(rootProject.file("keys.properties")))
-    buildTypes.forEach {
-        it.buildConfigField("String", "API_ENDPOINT", keystoreProperties.getProperty("baseUrl"))
-        it.buildConfigField("String", "API_KEY", keystoreProperties.getProperty("apiKey"))
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
